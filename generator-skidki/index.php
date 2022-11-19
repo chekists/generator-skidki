@@ -7,7 +7,7 @@ CJSCore::Init(array("jquery"));
 
     <a id="get" href="#" class="ya-btn" onclick="getDiscount(this);return false;">Получить скидку</a>
     <div class="message" id="message_code"></div>
-    <div class="error" id="errors_code"></div>
+    <div class="error" id="error_code"></div>
     <form class="ya-form" method="post" onsubmit="chekDiscount($(this).find('[name=code]').val());return false;">
         <input type="text" name="code" placeholder="Код скидки">
         <input class="ya-btn" name="btn" type="submit" value="Проверить скидку">
@@ -28,6 +28,7 @@ CJSCore::Init(array("jquery"));
             },
             dataType: "json",
             success: function(out){
+                console.log(out);
                 if(!out.error && out.code)
                 {
                     $('#message_code').html('Ваш код скидки: '+out.code+'<br> Ваша скидка: '+out.percent+'%');

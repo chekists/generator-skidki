@@ -10,6 +10,10 @@ use Bitrix\Sale\Internals;
 CModule::IncludeModule("catalog");
 CModule::IncludeModule("sale");
 global $APPLICATION, $USER;
+if(!$USER->IsAuthorized())
+{
+    die(json_encode(['error'=>'Вы не авторизованы']));
+}
 $userId = $USER->GetID();
 $request = \Bitrix\Main\Context::getCurrent()->getRequest();
 $action = strip_tags(trim($request->get("action")));
@@ -36,7 +40,7 @@ switch ($action) {
             'SORT' => 100,
             "CURRENCY" => "RUB",
             "ACTIVE" => "Y",
-            //"USER_GROUPS" => array(6),
+            "USER_GROUPS" => array(2),
             "ACTIVE_FROM" => ConvertTimeStamp($discountStart, "FULL"),
             "ACTIVE_TO" => ConvertTimeStamp($discountEnd, "FULL"),
             'LAST_DISCOUNT' => 'Y',
