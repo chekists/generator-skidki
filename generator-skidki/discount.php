@@ -13,20 +13,14 @@ global $APPLICATION, $USER;
 $userId = $USER->GetID();
 $request = \Bitrix\Main\Context::getCurrent()->getRequest();
 $action = strip_tags(trim($request->get("action")));
+$discountStart = strtotime(date("d.m.Y H:i:s"));
 switch ($action) {
     case 'get':
         $arResultDiscount = array();
-        $discountStart = strtotime(date("d.m.Y H:i:s"));
-
         $filter = array('USER_ID'=>$userId, 'ACTIVE'=>'Y', '>=ACTIVE_TO'=> new \Bitrix\Main\Type\DateTime(
             ConvertTimeStamp($discountStart, "FULL")
         ));
         $coupon = getCoupon($filter);
-
-        /*echo '<pre>';
-        print_r($coupon);
-        echo '</pre>';
-        exit();*/
         if(!empty($coupon['COUPON']))
         {
             echo json_encode(['code'=>$coupon['COUPON'], 'percent'=>$coupon['PERCENT']]);
@@ -100,6 +94,7 @@ switch ($action) {
                 $err = $dd->getErrorMessages();
             } else {
                 $arResultDiscount['code'] = $codeCoupon;
+                $arResultDiscount['percent'] = $discountValue;
             }
         } else {
             $ex = $APPLICATION->GetException();
@@ -109,7 +104,25 @@ switch ($action) {
         break;
     case 'check':
         $code = strip_tags(trim($request->get("code")));
-        echo json_encode(['code'=>$code,'percent'=>$discountValue]);
+
+        if(!empty($code))
+        {
+
+            $filter = array('COUPON'=>$code,'USER_ID'=>$userId, 'ACTIVE'=>'Y', '>=ACTIVE_TO'=> new \Bitrix\Main\Type\DateTime(
+            ConvertTimeStamp($discountStart, "FULL")
+            ));
+            $coupon = getCoupon($filter);
+            if(!empty($coupon['COUPON']))
+                echo json_encode(['code'=>$code,'percent'=>$coupon['PERCENT']]);
+            else
+            {
+                echo json_encode(['error'=>'Скидка недоступна']);
+            }
+        }
+        else
+        {
+            echo json_encode(['error'=>'поле "Код скидки" не заполнено']);
+        }
         break;
 }
 function getCoupon($filter)
@@ -121,6 +134,7 @@ function getCoupon($filter)
     ));
     if ($coupon = $couponIterator->fetch())
     {
+
         $couponData = $coupon;
         $rule = CSaleDiscount::GetByID($couponData['DISCOUNT_ID']);
         preg_match("/'VALUE' => -([.0-9]*)/m", $rule['APPLICATION'], $matches);
