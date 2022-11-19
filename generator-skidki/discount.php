@@ -36,7 +36,7 @@ switch ($action) {
             'SORT' => 100,
             "CURRENCY" => "RUB",
             "ACTIVE" => "Y",
-            "USER_GROUPS" => array(6),
+            //"USER_GROUPS" => array(6),
             "ACTIVE_FROM" => ConvertTimeStamp($discountStart, "FULL"),
             "ACTIVE_TO" => ConvertTimeStamp($discountEnd, "FULL"),
             'LAST_DISCOUNT' => 'Y',
