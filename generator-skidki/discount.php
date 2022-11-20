@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: artyom
- * Date: 19.11.2022
- * Time: 16:26
- */
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php");
 use Bitrix\Sale\Internals;
 CModule::IncludeModule("catalog");
@@ -138,12 +132,24 @@ function getCoupon($filter)
     ));
     if ($coupon = $couponIterator->fetch())
     {
-
         $couponData = $coupon;
-        $rule = CSaleDiscount::GetByID($couponData['DISCOUNT_ID']);
-        preg_match("/'VALUE' => -([.0-9]*)/m", $rule['APPLICATION'], $matches);
-        $couponData['PERCENT'] = $matches[1];
-
+        //$rule = CSaleDiscount::GetByID($couponData['DISCOUNT_ID']);
+        //preg_match("/'VALUE' => -([.0-9]*)/m", $rule['APPLICATION'], $matches);
+        //$couponData['PERCENT'] = $matches[1];
+        $couponData['PERCENT'] = getRulDiscountPercent($couponData['DISCOUNT_ID']);
     }
     return $couponData;
+}
+function getRulDiscountPercent($ruleId)
+{
+    global $DB;
+    $results = $DB->Query("SELECT `SHORT_DESCRIPTION`,`ACTIONS` FROM `b_sale_discount` WHERE `ID`=$ruleId");
+    if ($row = $results->Fetch())
+    {
+        //$data = unserialize($row['SHORT_DESCRIPTION']);
+        //return $data['VALUE'];
+
+        $data = unserialize($row['ACTIONS']);
+        return $data['CHILDREN'][0]['DATA']['Value'];
+    }
 }
