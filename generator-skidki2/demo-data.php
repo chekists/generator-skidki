@@ -72,5 +72,10 @@ for ($i=$discount['min']; $i<=$discount['max']; $i++) {
         ]
     );
     $ID = CSaleDiscount::Add($arFields); //Создаем правило корзины
-    echo "Правило корзины ".$i."% успешно добавлено.<br>";
+    if($ID)
+        echo "Правило корзины ".$i."% успешно добавлено.<br>";
+    else {
+        $ex = $APPLICATION->GetException();
+        echo $ex->GetString()." для скидки $i%<br>";
+    }
 }
