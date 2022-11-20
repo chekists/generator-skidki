@@ -25,7 +25,7 @@ switch ($action) {
             break;
         }
         $discountEnd = $discountStart + 3 * 60 * 60; //3 часа
-        $discountValue = rand(1, 50); //Размер случайной скидки от 1 до 10 процентов
+        $discountValue = rand(1, 50); //Размер случайной скидки от 1 до 50 процентов
         //Массив для создания правила
         $arFields = array(
             "LID" => 's1',
@@ -70,7 +70,7 @@ switch ($action) {
         $ID = CSaleDiscount::Add($arFields); //Создаем правило корзины
         $res = $ID > 0;
         if ($res) {
-            $codeCoupon = CatalogGenerateCoupon(); //Генирация купона
+            $codeCoupon = CatalogGenerateCoupon(); //Генирация кода купона
             $fields["DISCOUNT_ID"] = $ID;
             $fields["COUPON"] = $codeCoupon;
             $fields["ACTIVE"] = "Y";
