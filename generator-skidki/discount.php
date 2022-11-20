@@ -102,7 +102,6 @@ switch ($action) {
         break;
     case 'check':
         $code = strip_tags(trim($request->get("code")));
-
         if(!empty($code))
         {
 
@@ -143,7 +142,7 @@ function getCoupon($filter)
 function getRulDiscountPercent($ruleId)
 {
     global $DB;
-    $results = $DB->Query("SELECT `SHORT_DESCRIPTION`,`ACTIONS` FROM `b_sale_discount` WHERE `ID`=$ruleId");
+    $results = $DB->Query("SELECT SHORT_DESCRIPTION,ACTIONS FROM b_sale_discount WHERE ID=$ruleId");
     if ($row = $results->Fetch())
     {
         //$data = unserialize($row['SHORT_DESCRIPTION']);
